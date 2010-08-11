@@ -3,7 +3,7 @@
     <groupId>org.springframework.security.extensions</groupId>
     <artifactId>spring-security-portlet-sample</artifactId>
     <name>Spring Security - Portlet Extension Sample</name>
-	<version>1.0.0.CI-SNAPSHOT</version>      
+	<version>1.0.0.CI-SNAPSHOT</version>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>            
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
-            <version>1.1.2</version>            
+            <version>1.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -57,6 +57,6 @@
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
-        <spring.version>3.0.0.RELEASE</spring.version>
+        <spring.version>3.0.3.RELEASE</spring.version>
     </properties>    
 </project>
