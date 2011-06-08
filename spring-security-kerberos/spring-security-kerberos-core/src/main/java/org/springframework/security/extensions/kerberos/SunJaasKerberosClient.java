@@ -46,7 +46,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 public class SunJaasKerberosClient implements KerberosClient {
 
     private boolean debug = false;
-    
 
     private static final Log LOG = LogFactory.getLog(SunJaasKerberosClient.class);
 
@@ -120,9 +119,6 @@ public class SunJaasKerberosClient implements KerberosClient {
                             + ", but only NameCallback and PasswordCallback is supported");
                 }
             }
-
         }
-
     }
-
 }

@@ -38,8 +38,7 @@ public class GlobalSunJaasKerberosConfig implements BeanPostProcessor, Initializ
         }
 
     }
-    
-    
+
     /** 
      * Enable debug logs from the Sun Kerberos Implementation. Default is false.
      */
@@ -47,7 +46,6 @@ public class GlobalSunJaasKerberosConfig implements BeanPostProcessor, Initializ
         this.debug = debug;
     }
 
-    
     /** 
      * Kerberos config file location can be specified here.
      * 
@@ -57,7 +55,6 @@ public class GlobalSunJaasKerberosConfig implements BeanPostProcessor, Initializ
         this.krbConfLocation = krbConfLocation;
     }
 
-    
     /*
      *  The following methods are not used here. This Bean implements only BeanPostProcessor to ensure that it
      *  is created before any other bean is created, because the system properties needed to be set very early

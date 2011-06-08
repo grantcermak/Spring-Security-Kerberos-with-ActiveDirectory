@@ -38,8 +38,6 @@ public class KerberosAuthenticationProvider implements AuthenticationProvider {
     private KerberosClient kerberosClient;
     private UserDetailsService userDetailsService;
 
-   
-
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) authentication;
         String validatedUsername = kerberosClient.login(auth.getName(), auth.getCredentials().toString());

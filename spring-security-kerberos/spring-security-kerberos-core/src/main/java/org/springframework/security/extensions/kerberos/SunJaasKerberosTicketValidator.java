@@ -83,6 +83,13 @@ public class SunJaasKerberosTicketValidator implements KerberosTicketValidator, 
     }
 
     /**
+     * @return  The subject associated with the keytab
+     */
+    public Subject getServiceSubject() {
+        return serviceSubject;
+    }
+
+    /**
      * The location of the keytab. You can use the normale Spring Resource
      * prefixes like <code>file:</code> or <code>classpath:</code>, but as the
      * file is later on read by JAAS, we cannot guarantee that <code>classpath</code>

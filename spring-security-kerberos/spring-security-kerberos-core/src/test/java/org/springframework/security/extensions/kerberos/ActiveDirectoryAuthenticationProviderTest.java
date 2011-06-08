@@ -16,11 +16,6 @@
 
 package org.springframework.security.extensions.kerberos;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,48 +26,65 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
+
 /**
- * Test class for {@link KerberosAuthenticationProvider}
+ * Test class for {@link ActiveDirectoryAuthenticationProvider}
  *
- * @author Mike Wiesner
- * @since 1.0
+ * @author Grant Cermak
+ * @since 1.1
  * @version $Id$
  */
-public class KerberosAuthenticationProviderTest {
+public class ActiveDirectoryAuthenticationProviderTest {
 
-    private KerberosAuthenticationProvider provider;
-    private KerberosClient kerberosClient;
-    private UserDetailsService userDetailsService;
-    
+    private ActiveDirectoryAuthenticationProvider provider;
+    private ActiveDirectoryUserDetailsService userDetailsService;
+    private KerberosTicketValidator ticketValidator;
+    private ActiveDirectorySecurityIntegration securityIntegration;
+    private ActiveDirectoryAuthoritiesPopulator authoritiesPopulator;
+
     private static final String TEST_USER = "Testuser@SPRINGSOURCE.ORG";
-    private static final String TEST_PASSWORD = "password";
-    private static final UsernamePasswordAuthenticationToken INPUT_TOKEN = new UsernamePasswordAuthenticationToken(TEST_USER, TEST_PASSWORD);
+    private static final byte[] TOKEN = "12345".getBytes();
+    private static final KerberosServiceRequestToken INPUT_TOKEN = new KerberosServiceRequestToken(TEST_USER, null, TOKEN);
     private static final List<GrantedAuthority> AUTHORITY_LIST = AuthorityUtils.createAuthorityList("ROLE_ADMIN");
     private static final UserDetails USER_DETAILS = new User(TEST_USER, "empty", true, true, true,true, AUTHORITY_LIST);
-    
+    private static final List<String> GROUP_SIDS = new ArrayList<String>();
+
     @Before
     public void before() {
         // mocking
-        this.kerberosClient = mock(KerberosClient.class);
-        this.userDetailsService = mock(UserDetailsService.class);
-        this.provider = new KerberosAuthenticationProvider();
-        this.provider.setKerberosClient(kerberosClient);
+        this.securityIntegration = mock(ActiveDirectorySecurityIntegration.class);
+        this.authoritiesPopulator = mock(ActiveDirectoryAuthoritiesPopulator.class);
+
+        this.userDetailsService = mock(ActiveDirectoryUserDetailsService.class);
+        this.userDetailsService.setSecurityIntegration(securityIntegration);
+        this.userDetailsService.setAuthoritiesPopulator(authoritiesPopulator);
+
+        this.ticketValidator = mock(KerberosTicketValidator.class);
+
+        this.provider = new ActiveDirectoryAuthenticationProvider();
         this.provider.setUserDetailsService(userDetailsService);
+        this.provider.setTicketValidator(ticketValidator);
     }
-    
+
     @Test
     public void testLoginOk() throws Exception {
         when(userDetailsService.loadUserByUsername(TEST_USER)).thenReturn(USER_DETAILS);
-        when(kerberosClient.login(TEST_USER, TEST_PASSWORD)).thenReturn(TEST_USER);
-        
+        when(ticketValidator.validateTicket(TOKEN)).thenReturn(TEST_USER);
+        when(securityIntegration.getUserGroupSids(TOKEN)).thenReturn(GROUP_SIDS);
+        when(authoritiesPopulator.getGrantedAuthorities(GROUP_SIDS)).thenReturn(AUTHORITY_LIST);
+
         Authentication authenticate = provider.authenticate(INPUT_TOKEN);
-        
-        verify(kerberosClient).login(TEST_USER, TEST_PASSWORD);
-        
+
         assertNotNull(authenticate);
         assertEquals(TEST_USER, authenticate.getName());
         assertEquals(USER_DETAILS, authenticate.getPrincipal());
-        assertEquals(TEST_PASSWORD, authenticate.getCredentials());
         assertEquals(AUTHORITY_LIST, authenticate.getAuthorities());
     }
 }
